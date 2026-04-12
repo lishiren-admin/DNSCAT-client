@@ -2,8 +2,8 @@ asar: true
 asarUnpack:
   - bin/**
 extraFiles: []
-productName: Anylink Client
-appId: anylink-client
+productName: Dnscat Client
+appId: dnscat-client
 directories:
   output: build
 files:
