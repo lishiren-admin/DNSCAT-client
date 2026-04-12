@@ -1,4 +1,4 @@
-name: 打包Windows EXE
+name: 打包 Windows EXE
 on:
   workflow_dispatch:
 
@@ -8,19 +8,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: 设置Node.js
+      - name: 设置 Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 16
 
-      # 这里我加了 --legacy-peer-deps 解决依赖冲突！
       - name: 安装依赖
         run: npm install --legacy-peer-deps
 
-      - name: 打包EXE
-        run: npm run electron:build
+      - name: 打包 EXE
+        run: npm run build:win
 
-      - name: 保存安装包
+      - name: 上传安装包
         uses: actions/upload-artifact@v4
         with:
           name: my-exe
