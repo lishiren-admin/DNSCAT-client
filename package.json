@@ -1,10 +1,10 @@
 {
-  "name": "anylink-client",
-  "appName": "Anylink Client",
+  "name": "dnscat-client",
+  "appName": "dnscat Client",
   "version": "1.0.0",
-  "author": "jiaxiaoyu <jarryxy@qq.com>",
+  "author": "dnscat <bumcnlee@163.com>",
   "main": "./dist/electron/main.js",
-  "homepage": "https://github.com/jarryxy/anylink-client",
+  "homepage": "https://www.dnscat.net",
   "scripts": {
     "dev": "cross-env TERGET_ENV=development node .electron-vue/dev-runner.js",
     "build:win": "cross-env BUILD_TARGET=clean node .electron-vue/build.js && cross-env AGENT_ARCH=386 electron-builder --win --ia32 && cross-env AGENT_ARCH=amd64 electron-builder --win --x64 && cross-env AGENT_ARCH=arm64 electron-builder --win --arm64",
