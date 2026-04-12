@@ -1,53 +1,36 @@
-asar: true
-asarUnpack:
-  - bin/**
-extraFiles: []
-productName: Dnscat Client
-appId: dnscat-client
-directories:
-  output: build
-files:
-  - dist/electron/**/*
+name: 全平台打包 EXE + DMG + Linux
 
-dmg:
-  contents:
-    - x: 410
-      y: 150
-      type: link
-      path: /Applications
-    - x: 130
-      y: 150
-      type: file
-mac:
-  icon: config/icons/icon.icns
-  target: dmg
-  artifactName: "${productName}-${version}-mac-${arch}.${ext}"
-  extraResources:
-    - from: vpnagent/anylink_client_agent-darwin-${env.AGENT_ARCH}
-      to: bin/anylink_client_agent
-      filter:
-        - "**/*"
-win:
-  icon: config/icons/icon.ico
-  target: nsis
-  artifactName: "${productName}-${version}-win-${arch}.${ext}"
-  extraResources:
-    - from: vpnagent/anylink_client_agent-windows-${env.AGENT_ARCH}.exe
-      to: bin/anylink_client_agent.exe
-      filter:
-        - "**/*"
-linux:
-  icon: config/icons/icon.png
-  target: [tar.gz]
-  artifactName: "${productName}-${version}-linux-${arch}.${ext}"
-  extraResources:
-    - from: vpnagent/anylink_client_agent-linux-${env.AGENT_ARCH}
-      to: bin/anylink_client_agent
-      filter:
-        - "**/*"
-nsis:
-  include: installer.nsi
-  oneClick: false
-  perMachine: true
-  allowToChangeInstallationDirectory: true
-  license: LICENSE
+on:
+  workflow_dispatch:    # 手动点一下就打包
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 安装依赖
+        run: npm install
+
+      # 安装编译依赖
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libarchive-tools rpm binutils
+
+      # 打包 Windows + Mac + Linux 全部
+      - name: 全平台编译
+        run: npm run electron:build -- --win --mac --linux
+
+      # 上传所有输出文件
+      - name: 上传所有安装包
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-packages
+          path: build/*.{exe,dmg,tar.gz,rpm,deb}
