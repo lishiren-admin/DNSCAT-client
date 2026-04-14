@@ -1,4 +1,4 @@
-name: 打包EXE
+name: 打包 Windows EXE
 on:
   workflow_dispatch:
 
@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: 设置Node.js
+      - name: 设置 Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 16
@@ -16,19 +16,13 @@ jobs:
       - name: 安装依赖
         run: npm install --legacy-peer-deps
 
-      - name: 清理编译
-        run: npm run build:clean
+      - name: 安装 cross-env
+        run: npm install -g cross-env
 
-      - name: 打包 32位
-        run: cross-env AGENT_ARCH=386 electron-builder --win --ia32 --publish=never
+      - name: 打包 64位 EXE (只打这个，最快最稳)
+        run: npm run build:win -- --publish=never
 
-      - name: 打包 64位
-        run: cross-env AGENT_ARCH=amd64 electron-builder --win --x64 --publish=never
-
-      - name: 打包 arm64
-        run: cross-env AGENT_ARCH=arm64 electron-builder --win --arm64 --publish=never
-
-      - name: 保存所有EXE
+      - name: 保存安装包
         uses: actions/upload-artifact@v4
         with:
           name: my-exe
