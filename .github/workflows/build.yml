@@ -1,4 +1,4 @@
-name: 打包 Windows EXE
+name: 打包EXE
 on:
   workflow_dispatch:
 
@@ -8,21 +8,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: 设置 Node.js 16
-        uses: actions/setup-node@v4  # 这里修好了
+      - name: 设置Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 16
 
       - name: 安装依赖
         run: npm install --legacy-peer-deps
 
-      - name: 打包（强制跳过token检查）
-        run: |
-          set GH_TOKEN=none
-          npm run build:win
+      - name: 清理编译
+        run: npm run build:clean
 
-      - name: 保存所有安装包
-        uses: actions/upload-artifact@v4  # 这里修好了
+      - name: 打包 32位
+        run: cross-env AGENT_ARCH=386 electron-builder --win --ia32 --publish=never
+
+      - name: 打包 64位
+        run: cross-env AGENT_ARCH=amd64 electron-builder --win --x64 --publish=never
+
+      - name: 打包 arm64
+        run: cross-env AGENT_ARCH=arm64 electron-builder --win --arm64 --publish=never
+
+      - name: 保存所有EXE
+        uses: actions/upload-artifact@v4
         with:
           name: my-exe
           path: build/
