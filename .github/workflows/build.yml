@@ -1,14 +1,14 @@
-name: 打包 Windows EXE
+name: 打包EXE
 on:
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: 设置 Node.js
+      - name: 设置Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 16
@@ -16,13 +16,12 @@ jobs:
       - name: 安装依赖
         run: npm install --legacy-peer-deps
 
-      - name: 安装 cross-env
-        run: npm install -g cross-env
+      - name: 打包Windows EXE
+        run: npm run build:win
+        env:
+          GH_TOKEN: "no-token"
 
-      - name: 打包 64位 EXE (只打这个，最快最稳)
-        run: npm run build:win -- --publish=never
-
-      - name: 保存安装包
+      - name: 保存文件
         uses: actions/upload-artifact@v4
         with:
           name: my-exe
